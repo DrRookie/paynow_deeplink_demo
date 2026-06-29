@@ -1,0 +1,202 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background: white;
+  padding: 28px 24px;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.paynow-badge {
+  background: #E30613;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-right: 8px;
+}
+
+.secure-label {
+  color: grey;
+  font-size: 13px;
+  flex: 1;
+}
+
+.amount-label {
+  color: grey;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.amount {
+  font-size: 32px;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.details-box {
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detail-item {
+  flex: 1;
+}
+
+.detail-item label {
+  font-size: 11px;
+  color: grey;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.detail-item span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.divider {
+  width: 1px;
+  height: 30px;
+  background: #ccc;
+  flex-shrink: 0;
+}
+
+.section-title {
+  padding: 24px 24px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #888;
+}
+
+.bank-list {
+  padding: 0 24px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.bank-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: opacity 0.15s;
+}
+
+.bank-card:active {
+  opacity: 0.6;
+}
+
+.bank-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.bank-info {
+  flex: 1;
+}
+
+.bank-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+}
+
+.bank-subtitle {
+  font-size: 12px;
+  color: grey;
+}
+
+.chevron {
+  color: #aaa;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.footer {
+  padding: 16px;
+  text-align: center;
+  font-size: 11px;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.error-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 24px;
+  width: 100%;
+}
+
+.error-icon {
+  font-size: 64px;
+  color: #E30613;
+  margin-bottom: 16px;
+}
+
+.error-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.error-subtitle {
+  color: grey;
+}
