@@ -1,3 +1,11 @@
+function isAndroid() {
+  return /android/i.test(navigator.userAgent);
+}
+
+function isIOS() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
+}
+
 const banks = [
   {
     name: 'DBS Bank',
@@ -123,7 +131,6 @@ function renderApp(amount, ref, proxy) {
       </div>
 
       <div class="section-title">Select your bank</div>
-
       <div class="bank-list" id="bankList"></div>
 
       <div class="footer">
@@ -132,25 +139,30 @@ function renderApp(amount, ref, proxy) {
     </div>
   `;
 
-  const bankList = document.getElementById('bankList');
-  banks.forEach(bank => {
-    const card = document.createElement('button');
-    card.className = 'bank-card';
-    card.innerHTML = `
-      <div class="bank-logo" style="background:${bank.color}; color:${bank.textColor}">
-        ${bank.initials}
-      </div>
-      <div class="bank-info">
-        <div class="bank-name">${bank.name}</div>
-        <div class="bank-subtitle">${bank.subtitle}</div>
-      </div>
-      <div class="chevron">›</div>
-    `;
-    card.addEventListener('click', () => {
-      launchBank(bank.scheme, bank.appStoreUrl, bank.name, amount, ref, proxy);
+  if (isAndroid()) {
+    const intentUrl = `intent://paynow?amount=${amount}&ref=${ref}&proxy=${proxy}#Intent;scheme=paynow;end`;
+    window.location.href = intentUrl;
+  } else {
+    const bankList = document.getElementById('bankList');
+    banks.forEach(bank => {
+      const card = document.createElement('button');
+      card.className = 'bank-card';
+      card.innerHTML = `
+        <div class="bank-logo" style="background:${bank.color}; color:${bank.textColor}">
+          ${bank.initials}
+        </div>
+        <div class="bank-info">
+          <div class="bank-name">${bank.name}</div>
+          <div class="bank-subtitle">${bank.subtitle}</div>
+        </div>
+        <div class="chevron">›</div>
+      `;
+      card.addEventListener('click', () => {
+        launchBank(bank.scheme, bank.appStoreUrl, bank.name, amount, ref, proxy);
+      });
+      bankList.appendChild(card);
     });
-    bankList.appendChild(card);
-  });
+  }
 }
 
 const amount = getParam('amount');
