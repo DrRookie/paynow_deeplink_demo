@@ -13,8 +13,10 @@ const banks = [
     color: '#E30613',
     textColor: '#fff',
     initials: 'DBS',
-    scheme: 'dbsdigibank://',
+    iosScheme: 'dbsdigibank://',
+    androidIntent: 'intent://paynow#Intent;scheme=dbsdigibank;package=com.dbs.sg.digibank;end',
     appStoreUrl: 'https://apps.apple.com/sg/app/dbs-digibank-sg/id1068403826',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.dbs.sg.dbsmbanking&hl=en',
   },
   {
     name: 'OCBC Bank',
@@ -22,8 +24,10 @@ const banks = [
     color: '#EE2E24',
     textColor: '#fff',
     initials: 'OCBC',
-    scheme: 'ocbc://',
+    iosScheme: 'ocbc://',
+    androidIntent: 'intent://paynow#Intent;scheme=ocbc;package=com.ocbc.mobile;end',
     appStoreUrl: 'https://apps.apple.com/sg/app/ocbc-digital-mobile-banking/id292506828',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.ocbc.mobile&hl=en',
   },
   {
     name: 'UOB Bank',
@@ -31,8 +35,10 @@ const banks = [
     color: '#0033A0',
     textColor: '#fff',
     initials: 'UOB',
-    scheme: 'uobtmrw://',
+    iosScheme: 'uobtmrw://',
+    androidIntent: 'intent://paynow#Intent;scheme=uobtmrw;package=com.uob.mightysg;end',
     appStoreUrl: 'https://apps.apple.com/sg/app/uob-tmrw/id1049286296',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.uob.mighty.app&hl=en',
   },
   {
     name: 'Maybank',
@@ -40,8 +46,10 @@ const banks = [
     color: '#FFCC00',
     textColor: '#000',
     initials: 'MAY',
-    scheme: 'maybank2u://',
+    iosScheme: 'maybank2u://',
+    androidIntent: 'intent://paynow#Intent;scheme=maybank2u;package=com.maybank2u.life;end',
     appStoreUrl: 'https://apps.apple.com/sg/app/mae-by-maybank2u/id1481028763',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=sg.maybank.mae&hl=en',
   },
   {
     name: 'Citibank',
@@ -49,8 +57,10 @@ const banks = [
     color: '#003B70',
     textColor: '#fff',
     initials: 'CITI',
-    scheme: 'citibank://',
+    iosScheme: 'citibank://',
+    androidIntent: 'intent://paynow#Intent;scheme=citibank;package=com.citibank.mobile.sg;end',
     appStoreUrl: 'https://apps.apple.com/sg/app/citibank-sg/id370773317',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.citibank.mobile.sg&hl=en',
   },
   {
     name: 'CIMB Bank',
@@ -58,8 +68,10 @@ const banks = [
     color: '#720026',
     textColor: '#fff',
     initials: 'CIMB',
-    scheme: 'cimbclicks://',
+    iosScheme: 'cimbclicks://',
+    androidIntent: 'intent://paynow#Intent;scheme=cimbclicks;package=com.cimb.sg;end',
     appStoreUrl: 'https://apps.apple.com/sg/app/cimb-clicks-singapore/id383326796',
+    playStoreUrl: 'https://play.google.com/store/apps/details?id=com.cimb.sg.clicksMobile&hl=en',
   },
 ];
 
@@ -68,32 +80,60 @@ function getParam(key) {
   return params.get(key);
 }
 
-function launchBank(scheme, appStoreUrl, bankName, amount, ref, proxy) {
-  const deepLink = `${scheme}?amount=${encodeURIComponent(amount)}&ref=${encodeURIComponent(ref)}&proxy=${encodeURIComponent(proxy)}`;
+function launchBank(bank, amount, ref, proxy) {
+  if (isAndroid()) {
+    
+    const intentUrl = `intent://paynow?amount=${encodeURIComponent(amount)}&ref=${encodeURIComponent(ref)}&proxy=${encodeURIComponent(proxy)}#Intent;scheme=${bank.iosScheme.replace('://', '')};package=${bank.androidIntent.match(/package=([^;]+)/)[1]};end`;
+    window.location.href = intentUrl;
+  } else {
+    
+    const deepLink = `${bank.iosScheme}?amount=${encodeURIComponent(amount)}&ref=${encodeURIComponent(ref)}&proxy=${encodeURIComponent(proxy)}`;
+    const storeUrl = bank.appStoreUrl;
+    const bankName = bank.name;
 
-  window.location.href = deepLink;
+    window.location.href = deepLink;
 
-  const bankList = document.getElementById('bankList');
-  bankList.innerHTML = `
-    <div style="text-align:center; padding: 40px 24px;">
-      <div style="font-size: 48px; margin-bottom: 16px;">🏦</div>
-      <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Opening ${bankName}...</div>
-      <div style="font-size: 13px; color: grey; margin-bottom: 32px;">If ${bankName} did not open, tap below to download it.</div>
-      <a href="${appStoreUrl}" style="
-        display: inline-block;
-        background: #1a1a1a;
-        color: white;
-        padding: 14px 28px;
-        border-radius: 12px;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-      ">Download ${bankName}</a>
-      <div style="margin-top: 16px;">
-        <a onclick="renderApp('${amount}', '${ref}', '${proxy}')" style="font-size: 13px; color: grey; cursor: pointer;">← Back to bank selection</a>
-      </div>
-    </div>
-  `;
+    let appOpened = false;
+
+    function onVisibilityChange() {
+      if (document.hidden) {
+        appOpened = true;
+        clearTimeout(timer);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+      }
+    }
+
+    const timer = setTimeout(() => {
+      if (!appOpened) {
+        const bankList = document.getElementById('bankList');
+        if (bankList) {
+          bankList.innerHTML = `
+            <div style="text-align:center; padding: 40px 24px;">
+              <div style="font-size: 48px; margin-bottom: 16px;">🏦</div>
+              <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">App not found</div>
+              <div style="font-size: 13px; color: grey; margin-bottom: 32px;">It seems you don't have the ${bankName} app installed.</div>
+              <a href="${storeUrl}" style="
+                display: block;
+                background: #1a1a1a;
+                color: white;
+                padding: 14px 28px;
+                border-radius: 12px;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 12px;
+              ">Download ${bankName}</a>
+              <div style="margin-top: 16px;">
+                <a onclick="renderApp('${amount}', '${ref}', '${proxy}')" style="font-size: 13px; color: grey; cursor: pointer;">← Back to bank selection</a>
+              </div>
+            </div>
+          `;
+        }
+      }
+    }, 1400);
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+  }
 }
 
 function renderError() {
@@ -139,30 +179,25 @@ function renderApp(amount, ref, proxy) {
     </div>
   `;
 
-  if (isAndroid()) {
-    const intentUrl = `intent://paynow?amount=${amount}&ref=${ref}&proxy=${proxy}#Intent;scheme=paynow;end`;
-    window.location.href = intentUrl;
-  } else {
-    const bankList = document.getElementById('bankList');
-    banks.forEach(bank => {
-      const card = document.createElement('button');
-      card.className = 'bank-card';
-      card.innerHTML = `
-        <div class="bank-logo" style="background:${bank.color}; color:${bank.textColor}">
-          ${bank.initials}
-        </div>
-        <div class="bank-info">
-          <div class="bank-name">${bank.name}</div>
-          <div class="bank-subtitle">${bank.subtitle}</div>
-        </div>
-        <div class="chevron">›</div>
-      `;
-      card.addEventListener('click', () => {
-        launchBank(bank.scheme, bank.appStoreUrl, bank.name, amount, ref, proxy);
-      });
-      bankList.appendChild(card);
+  const bankList = document.getElementById('bankList');
+  banks.forEach(bank => {
+    const card = document.createElement('button');
+    card.className = 'bank-card';
+    card.innerHTML = `
+      <div class="bank-logo" style="background:${bank.color}; color:${bank.textColor}">
+        ${bank.initials}
+      </div>
+      <div class="bank-info">
+        <div class="bank-name">${bank.name}</div>
+        <div class="bank-subtitle">${bank.subtitle}</div>
+      </div>
+      <div class="chevron">›</div>
+    `;
+    card.addEventListener('click', () => {
+      launchBank(bank, amount, ref, proxy);
     });
-  }
+    bankList.appendChild(card);
+  });
 }
 
 const amount = getParam('amount');
