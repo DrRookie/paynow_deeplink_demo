@@ -1,0 +1,13 @@
+﻿# Android build output
+**/build/
+**/.gradle/
+**/*.iml
+**/.idea/
+**/local.properties
+**/captures/
+**/.externalNativeBuild/
+**/.cxx/
+
+# OS junk
+.DS_Store
+Thumbs.db

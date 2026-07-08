@@ -1,0 +1,22 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.paynowdemo",
+      "sha256_cert_fingerprints": [
+        "B9:27:06:E2:1C:88:9F:B9:72:D6:96:0A:C7:FF:A9:FB:75:B1:39:8F:84:C8:A0:6E:A4:B0:BE:DD:B8:F0:59:72"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.ocbcdemo",
+      "sha256_cert_fingerprints": [
+        "B9:27:06:E2:1C:88:9F:B9:72:D6:96:0A:C7:FF:A9:FB:75:B1:39:8F:84:C8:A0:6E:A4:B0:BE:DD:B8:F0:59:72"
+      ]
+    }
+  }
+]

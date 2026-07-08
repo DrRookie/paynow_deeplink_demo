@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- This inline script runs immediately, before the CSS or app.js are
+       even requested - this is the earliest point in page load we can
+       act, which minimizes the visible "flash" before Chrome hands off
+       to the intent chooser. Kept intentionally tiny and dependency-free
+       so it has nothing to wait on. -->
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var amount = params.get('amount');
+      var ref = params.get('ref');
+      var proxy = params.get('proxy');
+      var fallback = params.get('fallback');
+      var isAndroid = /android/i.test(navigator.userAgent);
+
+      if (isAndroid && amount && ref && proxy && fallback !== '1') {
+        var SHARED_ANDROID_SCHEME = 'paynowsg';
+        var qs = new URLSearchParams({ amount: amount, ref: ref, proxy: proxy }).toString();
+        var fallbackUrl =
+          window.location.origin + window.location.pathname + '?' +
+          new URLSearchParams({ amount: amount, ref: ref, proxy: proxy, fallback: '1' }).toString();
+
+        var intentUrl =
+          'intent://pay?' + qs +
+          '#Intent;scheme=' + SHARED_ANDROID_SCHEME + ';' +
+          'S.browser_fallback_url=' + encodeURIComponent(fallbackUrl) + ';end';
+
+        window.location.href = intentUrl;
+      }
+    })();
+  </script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayNow Bank Selector</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <script src="app.js"></script>
+</body>
+</html>
